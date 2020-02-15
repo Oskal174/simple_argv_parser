@@ -137,6 +137,8 @@ std::string parser::get_str_option(std::string name)
     {
         return this->str_opts[name].value;
     }
+
+    return "";
 }
 
 uint64_t parser::get_uint_option(std::string name)
@@ -146,6 +148,8 @@ uint64_t parser::get_uint_option(std::string name)
     {
         return this->uint_opts[name].value;
     }
+
+    return 0;
 }
 
 int64_t parser::get_int_option(std::string name)
@@ -155,6 +159,8 @@ int64_t parser::get_int_option(std::string name)
     {
         return this->int_opts[name].value;
     }
+
+    return 0;
 }
 
 float parser::get_float_option(std::string name)
@@ -164,6 +170,8 @@ float parser::get_float_option(std::string name)
     {
         return this->float_opts[name].value;
     }
+
+    return 0.0;
 }
 
 
