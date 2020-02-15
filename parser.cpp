@@ -82,7 +82,6 @@ void parser::parse_argv(int argc, char* argv[])
 
     for (auto &argv_it : argv_name_value)
     {
-        std::cout << argv_it.first << " : " << argv_it.second << std::endl;
         if (this->str_opts.find(argv_it.first) != this->str_opts.end())
         {
             this->str_opts[argv_it.first].value = argv_it.second;
@@ -90,45 +89,82 @@ void parser::parse_argv(int argc, char* argv[])
 
         if (this->uint_opts.find(argv_it.first) != this->uint_opts.end())
         {
-            this->uint_opts[argv_it.first].value = std::stoull(argv_it.second);
+            this->uint_opts[argv_it.first].value = std::stoull(argv_it.second.empty() ? "0" : argv_it.second);
         }
 
         if (this->int_opts.find(argv_it.first) != this->int_opts.end())
         {
-            this->int_opts[argv_it.first].value = std::stoll(argv_it.second);
+            this->int_opts[argv_it.first].value = std::stoll(argv_it.second.empty() ? "0" : argv_it.second);
         }
 
         if (this->float_opts.find(argv_it.first) != this->float_opts.end())
         {
-            this->float_opts[argv_it.first].value = std::stof(argv_it.second);
+            this->float_opts[argv_it.first].value = std::stof(argv_it.second.empty() ? "0" : argv_it.second);
         }
     }
 }
 
-
-template <typename T>
-T get(parser &cli, std::string name)
+bool parser::is_set_option(std::string name)
 {
     name = "--" + name;
-    if (cli.str_opts.find(name) != cli.str_opts.end())
+    if (this->str_opts.find(name) != this->str_opts.end())
     {
-        return cli.str_opts[name].value;
+        return true;
     }
 
-    if (cli.uint_opts.find(name) != cli.uint_opts.end())
+    if (this->uint_opts.find(name) != this->uint_opts.end())
     {
-        return cli.uint_opts[name].value;
+        return true;
     }
 
-    if (cli.int_opts.find(name) != cli.int_opts.end())
+    if (this->int_opts.find(name) != this->int_opts.end())
     {
-        return cli.int_opts[name].value;
+        return true;
     }
 
-    if (cli.float_opts.find(name) != cli.float_opts.end())
+    if (this->float_opts.find(name) != this->float_opts.end())
     {
-        return cli.float_opts[name].value;
+        return true;
+    }
+
+    return false;
+}
+
+std::string parser::get_str_option(std::string name)
+{
+    name = "--" + name;
+    if (this->str_opts.find(name) != this->str_opts.end())
+    {
+        return this->str_opts[name].value;
     }
 }
+
+uint64_t parser::get_uint_option(std::string name)
+{
+    name = "--" + name;
+    if (this->uint_opts.find(name) != this->uint_opts.end())
+    {
+        return this->uint_opts[name].value;
+    }
+}
+
+int64_t parser::get_int_option(std::string name)
+{
+    name = "--" + name;
+    if (this->int_opts.find(name) != this->int_opts.end())
+    {
+        return this->int_opts[name].value;
+    }
+}
+
+float parser::get_float_option(std::string name)
+{
+    name = "--" + name;
+    if (this->float_opts.find(name) != this->float_opts.end())
+    {
+        return this->float_opts[name].value;
+    }
+}
+
 
 } // simple_argv_parser

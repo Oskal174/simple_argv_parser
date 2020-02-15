@@ -50,21 +50,26 @@ class parser
     typedef std::map<std::string, option<float>> float_opts_type;
 
 public:
+    void parse_argv(int argc, char* argv[]);
+
+    std::string help() const;
+
     void add_str_option(option<std::string> opt);
     void add_uint_option(option<uint64_t> opt);
     void add_int_option(option<int64_t> opt);
     void add_float_option(option<float> opt);
 
-    std::string help() const;
+    bool is_set_option(std::string name);
+
+    std::string get_str_option(std::string name);
+    uint64_t get_uint_option(std::string name);
+    int64_t get_int_option(std::string name);
+    float get_float_option(std::string name);
 
     /// TODO: add_options()
     /// TODO: add_option() any
     /// TODO: operator []
-
-    void parse_argv(int argc, char* argv[]);
-
-    template <typename T>
-    friend T get(parser &cli, std::string name);
+    /// TODO: get_option<string>(name);
 
 private:
     str_opts_type str_opts;
