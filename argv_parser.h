@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cstdint>
 #include <typeinfo>
 #include <typeindex>
@@ -6,11 +8,21 @@
 #include <map>
 #include <iostream>
 #include <any>
-
+#include <exception>
 
 namespace simple_argv_parser {
 
 using std::any;
+
+// class _unknown_option_name_exception: public std::exception
+// {
+// public:
+    
+//     virtual const char* what() const throw()
+//     {
+//         return "Simple Argv Parser Error: Unknown option name";
+//     }
+// } unknown_option_name_exception;
 
 class parser;
 
@@ -54,6 +66,8 @@ public:
     std::string help() const;
 
     void add_option(option o);
+
+    void get_option(std::string name, std::string &container);
 
     /// TODO: add_options()
     /// TODO: add_option() any

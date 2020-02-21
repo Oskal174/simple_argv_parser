@@ -7,6 +7,20 @@ void parser::add_option(option o)
     this->options["--" + o.name] = o;
 }
 
+void parser::get_option(std::string name, std::string &container)
+{
+    std::string option_name = "--" + name;
+    auto option_it = this->options.find(option_name);
+    if (option_it != this->options.end())
+    {
+        container = std::any_cast<std::string>(*option_it);
+    }
+    else
+    {
+        throw std::runtime_error("Unknown option name: " + option_name);
+    }
+}
+
 std::string parser::help() const
 {
     std::stringstream ss;
@@ -48,31 +62,35 @@ void parser::parse_argv(int argc, char* argv[])
 
     for (auto &argv_it : argv_name_value)
     {
-        if (this->options.find(argv_it.first) != this->options.end())
+        std::string option_name = argv_it.first;
+        if (this->options.find(option_name) != this->options.end())
         {
-            if (this->options[argv_it.first].value_type == typeid(int32_t))
+            if (this->options[option_name].value_type == typeid(int8_t)  ||
+                this->options[option_name].value_type == typeid(int16_t) ||
+                this->options[option_name].value_type == typeid(int32_t) ||
+                this->options[option_name].value_type == typeid(int64_t))
             {
+                this->options[option_name].value = std::stoll(argv_it.second.empty() ? "0" : argv_it.second);
+            }
+            else
+            if (this->options[option_name].value_type == typeid(uint8_t)  ||
+                this->options[option_name].value_type == typeid(uint16_t) ||
+                this->options[option_name].value_type == typeid(uint32_t) ||
+                this->options[option_name].value_type == typeid(uint64_t))
+            {
+                this->options[option_name].value = std::stoull(argv_it.second.empty() ? "0" : argv_it.second);
+            }
+            else 
+            if (this->options[option_name].value_type == typeid(float) ||
+                this->options[option_name].value_type == typeid(double)) 
+            {
+                this->options[option_name].value = std::stof(argv_it.second.empty() ? "0" : argv_it.second);
+            }
+            else // std::string
+            {
+                this->options[option_name].value = argv_it.second;
             }
         }
-        // if (this->str_opts.find(argv_it.first) != this->str_opts.end())
-        // {
-        //     this->str_opts[argv_it.first].value = argv_it.second;
-        // }
-
-        // if (this->uint_opts.find(argv_it.first) != this->uint_opts.end())
-        // {
-        //     this->uint_opts[argv_it.first].value = std::stoull(argv_it.second.empty() ? "0" : argv_it.second);
-        // }
-
-        // if (this->int_opts.find(argv_it.first) != this->int_opts.end())
-        // {
-        //     this->int_opts[argv_it.first].value = std::stoll(argv_it.second.empty() ? "0" : argv_it.second);
-        // }
-
-        // if (this->float_opts.find(argv_it.first) != this->float_opts.end())
-        // {
-        //     this->float_opts[argv_it.first].value = std::stof(argv_it.second.empty() ? "0" : argv_it.second);
-        // }
     }
 }
 
