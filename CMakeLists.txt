@@ -1,7 +1,7 @@
 cmake_minimum_required( VERSION  3.0 )
 project( simple_argv_parser )
 
-set (CMAKE_CXX_STANDARD 14)
+set (CMAKE_CXX_STANDARD 17)
 
 add_library( simple_argv_parser argv_parser.cpp )
 include_directories( simple_argv_parser ${CMAKE_CURRENT_SOURCE_DIR} )

@@ -1,34 +1,36 @@
-#include <typeinfo>
-#include <type_traits>
 #include <cstdint>
+#include <typeinfo>
+#include <typeindex>
 #include <string>
 #include <sstream>
 #include <map>
 #include <iostream>
+#include <any>
 
 
 namespace simple_argv_parser {
 
-using std::is_same;
+using std::any;
 
 class parser;
 
-template <typename T>
 class option
 {
 public:
-    option() {}
+    option() : value_type(typeid(void)) {}
 
-    option(std::string name, std::string description, T default_value)
+    option(std::string name, std::string description, any default_value)
         : name(name)
         , description(description)
         , default_value(default_value)
         , value(default_value)
+        , value_type(value.type())
     {}
 
-    option(std::string name, std::string description)
+    option(std::string name, std::string description, std::type_index value_type)
         : name(name)
         , description(description)
+        , value_type(value_type)
     {}
 
     friend parser;
@@ -36,35 +38,22 @@ public:
 private:
     std::string name;
     std::string description;
-    T default_value;
-    T value;
-
-    bool is_default_set;
+    any default_value;
+    any value;
+    std::type_index value_type;
 };
 
 class parser
 {
-    typedef std::map<std::string, option<std::string>> str_opts_type;
-    typedef std::map<std::string, option<uint64_t>> uint_opts_type;
-    typedef std::map<std::string, option<int64_t>> int_opts_type;
-    typedef std::map<std::string, option<float>> float_opts_type;
+
+typedef std::map<std::string, option> options_map_type;
 
 public:
     void parse_argv(int argc, char* argv[]);
 
     std::string help() const;
 
-    void add_str_option(option<std::string> opt);
-    void add_uint_option(option<uint64_t> opt);
-    void add_int_option(option<int64_t> opt);
-    void add_float_option(option<float> opt);
-
-    bool is_set_option(std::string name);
-
-    std::string get_str_option(std::string name);
-    uint64_t get_uint_option(std::string name);
-    int64_t get_int_option(std::string name);
-    float get_float_option(std::string name);
+    void add_option(option o);
 
     /// TODO: add_options()
     /// TODO: add_option() any
@@ -72,10 +61,7 @@ public:
     /// TODO: get_option<string>(name);
 
 private:
-    str_opts_type str_opts;
-    uint_opts_type uint_opts;
-    int_opts_type int_opts;
-    float_opts_type float_opts;
+    options_map_type options;
 };
 
 } // simple_argv_parser
