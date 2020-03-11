@@ -69,7 +69,7 @@ public:
 
     void get_option(std::string name, std::string &container);
 
-    void add_options(std::initializer_list<option> options);
+    /// TODO: add_options()
     /// TODO: add_option() any
     /// TODO: operator []
     /// TODO: get_option<string>(name);
