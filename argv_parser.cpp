@@ -7,6 +7,14 @@ void parser::add_option(option o)
     this->options["--" + o.name] = o;
 }
 
+void parser::add_options(std::initializer_list<option> options)
+{
+    for(option o : options)
+    {
+        add_option(o);
+    }
+}
+
 void parser::get_option(std::string name, std::string &container)
 {
     std::string option_name = "--" + name;
